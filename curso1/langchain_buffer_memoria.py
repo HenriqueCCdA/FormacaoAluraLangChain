@@ -2,7 +2,8 @@ from langchain_openai import ChatOpenAI
 from langchain.globals import set_debug
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-
+from langchain.memory import ConversationBufferMemory
+from langchain.chains.conversation.base import ConversationChain
 import os
 from dotenv import load_dotenv
 
@@ -25,10 +26,18 @@ mensagens = [
     "Na primeira cidade que você sugeriu lá atrás, quero saber 5 restaurantes para visitar. Responda somente o nome da cidade e o nome dos restaurantes.",
 ]
 
+memory = ConversationBufferMemory()
+
+conversation = ConversationChain(
+    llm=llm,
+    verbose=True,
+    memory=memory,
+)
+
+
 longa_conversa = ""
 for mensagem in mensagens:
-    longa_conversa = f"Usuário: {mensagens}\n"
-    longa_conversa += f"AI: "
+    conversation.predict(input=mensagem)
 
     modelo = PromptTemplate(template=longa_conversa, input_variables=[""])
 
