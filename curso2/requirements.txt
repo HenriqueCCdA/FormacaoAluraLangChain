@@ -1,0 +1,6 @@
+openai==1.66.2
+langchain==0.2.0
+langchain-openai
+python-dotenv==1.0.1
+langchainhub==0.1.15
+pandas==2.3.0
