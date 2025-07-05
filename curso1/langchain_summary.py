@@ -2,7 +2,7 @@ from langchain_openai import ChatOpenAI
 from langchain.globals import set_debug
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationSummaryMemory
 from langchain.chains.conversation.base import ConversationChain
 import os
 from dotenv import load_dotenv
@@ -26,7 +26,7 @@ mensagens = [
     "Na primeira cidade que você sugeriu lá atrás, quero saber 5 restaurantes para visitar. Responda somente o nome da cidade e o nome dos restaurantes.",
 ]
 
-memory = ConversationBufferMemory()
+memory = ConversationSummaryMemory(llm=llm)
 
 conversation = ConversationChain(
     llm=llm,

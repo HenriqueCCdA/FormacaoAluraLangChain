@@ -19,11 +19,13 @@ def busca_dados_de_estudante(estudante):
 
 
 class ExtratorDeEstudante(BaseModel):
-    estudante: str = Field("Nome do estutante informado, sempre e letras minusculas. Exemplo: joão, carlos,  joana, carla")
+    estudante: str = Field("Nome do estutante informado, sempre e letras minusculas.")
 
 class DadosDeEstudante(BaseTool):
     name="DadosDeEstudantes"
-    description = """Esta ferramenta extrai o histórico e preferências de um estudante de acordo com seu histórico"""
+    description = """Esta ferramenta extrai o histórico e preferências de um estudante de acordo com seu histórico.
+    Passe para essa ferramenta como arguento o nome do estudante.
+    """
 
     def _run(self, input: str) -> str:
         llm = ChatOpenAI(
@@ -32,9 +34,12 @@ class DadosDeEstudante(BaseTool):
         )
 
         parser = JsonOutputParser(pydantic_object=ExtratorDeEstudante)
-
         template = PromptTemplate(
-            template="""Você deve analisa a {input} para extrairr o nomme de usuário informado.
+            template="""Você deve analisar a entrada a seguir e extrair o nome informado em minúsculo.
+            Entrada:
+            -----------------
+            {input}
+            -----------------.
             Formato de saída:
             {formato_saida}
             """,
@@ -45,7 +50,7 @@ class DadosDeEstudante(BaseTool):
         cadeia = template | llm | parser
         resposta = cadeia.invoke({'input': input})
 
-        estudante = resposta["estudante"].lower()
+        estudante = resposta["estudante"].lower().strip()
 
         dados = busca_dados_de_estudante(estudante)
         return json.dumps(dados)
